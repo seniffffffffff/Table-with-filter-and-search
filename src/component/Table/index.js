@@ -15,13 +15,10 @@ const NewTable = () => {
     useEffect(() => {
         const fetchPostsList = async () => {
             const { data} = await axios("https://swapi.dev/api/people")
-            console.log(data);
             setPosts(data.results)
         }
         fetchPostsList()
     }, [setPosts])
-
-    console.log(posts);
 
     const sortingText = (col,id) => {
       setTheme(id)
@@ -59,6 +56,12 @@ const NewTable = () => {
     const filteredNames = posts.filter(name => {
       return name.name.toLowerCase().includes(value.toLocaleLowerCase())
     })
+    
+    // const 
+
+    const valueChangeHandler = () => {
+      setPosts(filteredNames);
+    }
 
     return (
         <div className="divBody">
@@ -66,11 +69,10 @@ const NewTable = () => {
             <div className="input-group mb-4">
           <input onChange={(event) => setValue(event.target.value)} value={value} type="text" id="input-text" className="form-control" placeholder="Type name here" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
           <div className="input-group-append">
-            <button onClick={() => setValue(value)} className="btn" id="buttonFind" type="button">Search</button>
+            <button onClick={(event) => valueChangeHandler()} className="btn" id="buttonFind" type="button">Search</button>
           </div>
         </div>
           </div>
-        
         <Table striped bordered hover className="tableTab">
   <thead>
   <tr>
@@ -104,9 +106,10 @@ const NewTable = () => {
         </th>
     </tr>
   </thead>
-  <tbody>
-      {
- filteredNames &&  filteredNames.map((item) => (
+  <tbody>    
+  
+      { 
+    posts &&  posts.map((item) => (
           <tr key={item.name}>
       <td>{item.name}</td>
       <td>{item.birth_year}</td>
@@ -116,13 +119,7 @@ const NewTable = () => {
         ))
       }
   </tbody>
-</Table >
-      {/* <Router>
-        <Switch>
-          <Route exact path="./component/Home/Home" component={Home}/>
-          <Route exact path="./component/Table" component={Table}/>
-        </Switch>
-      </Router> */}
+</Table>
         </div>
     )
 }
