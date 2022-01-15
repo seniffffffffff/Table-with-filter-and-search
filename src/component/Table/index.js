@@ -1,21 +1,22 @@
 import React, {useEffect,useState} from "react";
 import axios from "axios"
 import Table from 'react-bootstrap/Table';
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Switch,
-// } from "react-router-dom";
+
 
 const NewTable = () => {
+
     const [theme, setTheme] = useState("default")
     const [posts, setPosts] = useState([])
     const [order, setOrder] = useState("ASC")
     const [value, setValue] = useState("")
+    const [normalPosts, setNormalPosts] = useState(posts)
+
+
     useEffect(() => {
         const fetchPostsList = async () => {
-            const { data} = await axios("https://swapi.dev/api/people")
+            const {data} = await axios("https://swapi.dev/api/people")
             setPosts(data.results)
+            setNormalPosts(data.results)
         }
         fetchPostsList()
     }, [setPosts])
@@ -53,23 +54,34 @@ const NewTable = () => {
       }
     }
 
+
+
     const filteredNames = posts.filter(name => {
       return name.name.toLowerCase().includes(value.toLocaleLowerCase())
     })
     
-    // const 
+    const inputChanger = (event) => {
+      setValue(event.target.value)
+      if (value === "") {
+        setPosts(normalPosts)
+      }
+    }
 
     const valueChangeHandler = () => {
-      setPosts(filteredNames);
+      if (value === "") {
+        setPosts(normalPosts)
+        
+      }else {
+        setPosts(filteredNames);} 
     }
 
     return (
         <div className="divBody">
           <div className="input-search">
             <div className="input-group mb-4">
-          <input onChange={(event) => setValue(event.target.value)} value={value} type="text" id="input-text" className="form-control" placeholder="Type name here" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
+          <input onChange={(event) => inputChanger(event)} value={value} type="text" id="input-text" className="form-control" placeholder="Type name here" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
           <div className="input-group-append">
-            <button onClick={(event) => valueChangeHandler()} className="btn" id="buttonFind" type="button">Search</button>
+            <button onClick={() => valueChangeHandler()} className="btn" id="buttonFind" type="button">Search</button>
           </div>
         </div>
           </div>
@@ -107,7 +119,6 @@ const NewTable = () => {
     </tr>
   </thead>
   <tbody>    
-  
       { 
     posts &&  posts.map((item) => (
           <tr key={item.name}>
